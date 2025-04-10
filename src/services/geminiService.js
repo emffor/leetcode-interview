@@ -39,6 +39,14 @@ class GeminiService {
     try {
       console.log('Analisando imagem:', imageUrl);
       
+      // Buscar a imagem da URL
+      const imageResponse = await axios.get(imageUrl, { responseType: 'arraybuffer' });
+      // Converter para Base64 usando btoa
+      const base64Image = btoa(
+        new Uint8Array(imageResponse.data)
+          .reduce((data, byte) => data + String.fromCharCode(byte), '')
+      );
+      
       // Construir prompt base
       const basePrompt = 
         "Você é um assistente para entrevistas de programação. Analise esta imagem de código ou problema " +
@@ -59,7 +67,7 @@ class GeminiService {
               {
                 inline_data: {
                   mime_type: "image/png",
-                  data: imageUrl
+                  data: base64Image
                 }
               }
             ]

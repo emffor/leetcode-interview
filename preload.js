@@ -24,4 +24,6 @@ contextBridge.exposeInMainWorld('electron', {
   onError: (callback) => {
     ipcRenderer.on('error', (_, message) => callback(message));
   },
+
+  // Buffer já está disponível globalmente em Electron
 });
