@@ -7,10 +7,6 @@ class GeminiService {
     this.baseUrl = 'https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash-lite:generateContent';
   }
 
-  /**
-   * Inicializa o serviço com a chave API
-   * @returns {boolean} Status da inicialização
-   */
   async initialize() {
     try {
       this.apiKey = await window.electron.getConfig('geminiApiKey');
@@ -28,20 +24,10 @@ class GeminiService {
     }
   }
 
-  /**
-   * Verifica se o serviço está inicializado
-   * @returns {boolean}
-   */
   isInitialized() {
     return this.initialized && this.apiKey !== null;
   }
 
-  /**
-   * Analisa uma imagem e gera uma resposta para resolver o problema
-   * @param {string} imageUrl URL da imagem no Supabase
-   * @param {string} customPrompt Prompt personalizado opcional
-   * @returns {Promise<string>} Resposta da IA
-   */
   async analyzeImage(imageUrl, customPrompt = '') {
     if (!this.isInitialized()) {
       await this.initialize();
@@ -53,38 +39,59 @@ class GeminiService {
     try {
       console.log('Analisando imagem:', imageUrl);
       
-      // Modo teste - retornar resposta simulada
-      const respostaSimulada = `# Solução Simulada (Modo Teste)
-
-**Problema**: Soma de dois números
-
-## Explicação:
-Este problema pede para encontrar dois números em um array que somados resultem em um valor específico.
-
-## Solução:
-\`\`\`javascript
-function twoSum(nums, target) {
-  const map = new Map();
-  
-  for (let i = 0; i < nums.length; i++) {
-    const complement = target - nums[i];
-    
-    if (map.has(complement)) {
-      return [map.get(complement), i];
-    }
-    
-    map.set(nums[i], i);
-  }
-  
-  return null;
-}
-\`\`\`
-
-## Complexidade:
-- Tempo: O(n)
-- Espaço: O(n)`;
+      // Construir prompt base
+      const basePrompt = 
+        "Você é um assistente para entrevistas de programação. Analise esta imagem de código ou problema " +
+        "e forneça: 1) Identificação do problema, 2) Explicação detalhada, 3) Solução otimizada em código, " +
+        "4) Análise de complexidade. Use markdown para formatação.";
       
-      return respostaSimulada;
+      // Combinar com prompt personalizado se existir
+      const finalPrompt = customPrompt ? 
+        `${basePrompt}\n\nInstruções adicionais: ${customPrompt}` : 
+        basePrompt;
+      
+      // Preparar payload para a API Gemini
+      const payload = {
+        contents: [
+          {
+            parts: [
+              { text: finalPrompt },
+              {
+                inline_data: {
+                  mime_type: "image/png",
+                  data: imageUrl
+                }
+              }
+            ]
+          }
+        ],
+        generation_config: {
+          temperature: 0.2,
+          max_output_tokens: 2048,
+        }
+      };
+      
+      // Chamar API Gemini
+      const response = await axios.post(
+        `${this.baseUrl}?key=${this.apiKey}`,
+        payload,
+        {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+      
+      // Extrair e retornar o texto da resposta
+      if (response.data && 
+          response.data.candidates && 
+          response.data.candidates[0] && 
+          response.data.candidates[0].content &&
+          response.data.candidates[0].content.parts) {
+        return response.data.candidates[0].content.parts[0].text;
+      }
+      
+      throw new Error('Formato de resposta inesperado da API Gemini');
     } catch (error) {
       console.error('Erro ao analisar imagem com Gemini:', error);
       throw error;
@@ -92,6 +99,5 @@ function twoSum(nums, target) {
   }
 }
 
-// Singleton
 const geminiService = new GeminiService();
 export default geminiService;

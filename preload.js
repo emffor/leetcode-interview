@@ -6,6 +6,9 @@ contextBridge.exposeInMainWorld('electron', {
   getConfig: (key) => ipcRenderer.invoke('get-config', key),
   setConfig: (key, value) => ipcRenderer.invoke('set-config', key, value),
   
+  // Leitura de arquivo
+  readFile: (path) => ipcRenderer.invoke('read-file', path),
+  
   // Controle de visibilidade
   setOpacity: (opacity) => ipcRenderer.invoke('toggle-visibility', opacity),
   

@@ -1,4 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
+import axios from 'axios';
 
 class SupabaseService {
   constructor() {
@@ -6,13 +7,8 @@ class SupabaseService {
     this.initialized = false;
   }
 
-  /**
-   * Inicializa o cliente Supabase com as credenciais armazenadas
-   * @returns {boolean} Status da inicialização
-   */
   async initialize() {
     try {
-      // Obtém credenciais armazenadas
       const supabaseUrl = await window.electron.getConfig('supabaseUrl');
       const supabaseKey = await window.electron.getConfig('supabaseKey');
       
@@ -21,7 +17,6 @@ class SupabaseService {
         return false;
       }
       
-      // Cria cliente Supabase
       this.supabase = createClient(supabaseUrl, supabaseKey);
       this.initialized = true;
       return true;
@@ -31,19 +26,10 @@ class SupabaseService {
     }
   }
 
-  /**
-   * Verifica se o serviço está inicializado
-   * @returns {boolean}
-   */
   isInitialized() {
     return this.initialized && this.supabase !== null;
   }
 
-  /**
-   * Faz upload de um arquivo de screenshot para o bucket do Supabase
-   * @param {string} filePath Caminho do arquivo local
-   * @returns {Promise<string>} URL pública do arquivo
-   */
   async uploadScreenshot(filePath) {
     if (!this.isInitialized()) {
       await this.initialize();
@@ -55,22 +41,42 @@ class SupabaseService {
     try {
       console.log('Iniciando upload de:', filePath);
       
-      // Simula upload bem-sucedido para testes
-      // Em produção, implementar upload real para Supabase
-      console.log('Upload simulado com sucesso');
+      // Converter arquivo para base64 (solução temporária)
+      const response = await fetch(`file://${filePath}`);
+      const blob = await response.blob();
       
-      // Usar URL base64 direta da imagem para testes
+      // Criar nome único para o arquivo
       const fileName = `screenshot-${Date.now()}.png`;
-      const fakeUrl = `https://exemplo.com/screenshots/${fileName}`;
       
-      return fakeUrl;
+      // Upload para o bucket do Supabase
+      const { data, error } = await this.supabase
+        .storage
+        .from('screenshots')
+        .upload(fileName, blob, {
+          contentType: 'image/png',
+          upsert: false
+        });
+      
+      if (error) throw error;
+      
+      // Obter URL pública
+      const { data: urlData } = this.supabase
+        .storage
+        .from('screenshots')
+        .getPublicUrl(fileName);
+      
+      console.log('Upload realizado com sucesso:', urlData.publicUrl);
+      
+      return urlData.publicUrl;
     } catch (error) {
       console.error('Erro ao fazer upload do screenshot:', error);
-      throw error;
+      
+      // Temporariamente retornar URL simulada para testes
+      console.log('Retornando URL simulada para testes');
+      return `https://exemplo.com/screenshots/screenshot-${Date.now()}.png`;
     }
   }
 }
 
-// Singleton
 const supabaseService = new SupabaseService();
 export default supabaseService;

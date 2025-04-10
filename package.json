@@ -7,13 +7,23 @@
     "start": "electron .",
     "dev": "concurrently \"npm run start\" \"cross-env BROWSER=none npm run react-start\"",
     "react-start": "react-scripts start",
-    "react-build": "react-scripts build",
+    "react-build": "react-scripts build && cp -r public/electron.js build/",
     "build": "npm run react-build && electron-builder",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
   "author": "",
   "license": "MIT",
+  "build": {
+    "appId": "com.interview.helper",
+    "files": [
+      "build/**/*",
+      "node_modules/**/*"
+    ],
+    "directories": {
+      "buildResources": "assets"
+    }
+  },
   "dependencies": {
     "@supabase/supabase-js": "^2.38.4",
     "axios": "^1.6.2",
