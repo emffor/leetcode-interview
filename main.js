@@ -9,6 +9,10 @@ const fs = require('fs').promises;
 // Configuração para armazenar dados persistentes
 const store = new Store();
 
+let lastOpacity = 0.6;
+let isVisible = true;
+let invisibilityTimer = null;
+
 let mainWindow;
 
 // Verifica se o servidor React está disponível
@@ -118,6 +122,8 @@ function registerShortcuts() {
   // Atalho para opacidade 30%
   globalShortcut.register('Alt+1', () => {
     if (mainWindow) {
+      lastOpacity = 0.3;
+      isVisible = true;
       mainWindow.setOpacity(0.3);
       mainWindow.webContents.send('opacity-changed', 0.3);
     }
@@ -139,6 +145,32 @@ function registerShortcuts() {
     }
   });
 
+  globalShortcut.register('Alt+B', () => {
+    if (!mainWindow) return;
+    
+    isVisible = !isVisible;
+    
+    if (isVisible) {
+      clearTimeout(invisibilityTimer);
+      invisibilityTimer = null;
+      mainWindow.setOpacity(lastOpacity);
+      mainWindow.setIgnoreMouseEvents(false);
+      mainWindow.webContents.send('opacity-changed', lastOpacity);
+    } else {
+      lastOpacity = mainWindow.getOpacity();
+      mainWindow.setOpacity(0);
+      mainWindow.setIgnoreMouseEvents(true);
+      mainWindow.webContents.send('opacity-changed', 0);
+      
+      // Segurança: restaura após 20 segundos
+      invisibilityTimer = setTimeout(() => {
+        isVisible = true;
+        mainWindow.setOpacity(lastOpacity);
+        mainWindow.setIgnoreMouseEvents(false);
+        mainWindow.webContents.send('opacity-changed', lastOpacity);
+      }, 20000);
+    }
+  });
 
   globalShortcut.register('Alt+S', async () => {
     if (!mainWindow) return; 
