@@ -51,51 +51,40 @@ class GeminiService {
     }
     
     try {
-      // Constrói o prompt para a IA
-      const defaultPrompt = 
-        'Analise esta imagem de um problema de programação. ' +
-        'Identifique o tipo de problema (algoritmo, estrutura de dados, etc), ' +
-        'explique o desafio e forneça uma solução otimizada com código. ' +
-        'Detalhe a complexidade de tempo e espaço.';
+      console.log('Analisando imagem:', imageUrl);
       
-      const prompt = customPrompt || defaultPrompt;
+      // Modo teste - retornar resposta simulada
+      const respostaSimulada = `# Solução Simulada (Modo Teste)
+
+**Problema**: Soma de dois números
+
+## Explicação:
+Este problema pede para encontrar dois números em um array que somados resultem em um valor específico.
+
+## Solução:
+\`\`\`javascript
+function twoSum(nums, target) {
+  const map = new Map();
+  
+  for (let i = 0; i < nums.length; i++) {
+    const complement = target - nums[i];
+    
+    if (map.has(complement)) {
+      return [map.get(complement), i];
+    }
+    
+    map.set(nums[i], i);
+  }
+  
+  return null;
+}
+\`\`\`
+
+## Complexidade:
+- Tempo: O(n)
+- Espaço: O(n)`;
       
-      // Prepara payload para a API
-      const payload = {
-        contents: [
-          {
-            parts: [
-              {
-                text: prompt
-              },
-              {
-                inline_data: {
-                  mime_type: 'image/png',
-                  data: imageUrl
-                }
-              }
-            ]
-          }
-        ],
-        generation_config: {
-          temperature: 0.2,
-          max_output_tokens: 4096
-        }
-      };
-      
-      // Faz requisição para a API
-      const response = await axios.post(
-        `${this.baseUrl}?key=${this.apiKey}`,
-        payload,
-        {
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        }
-      );
-      
-      // Extrai e retorna o texto da resposta
-      return response.data.candidates[0].content.parts[0].text;
+      return respostaSimulada;
     } catch (error) {
       console.error('Erro ao analisar imagem com Gemini:', error);
       throw error;
