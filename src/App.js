@@ -58,6 +58,9 @@ function App() {
   
   return (
     <div className="app-container">
+      {/* Barra de arrasto */}
+      <div className="drag-bar"></div>
+      
       {/* Barra superior com abas */}
       <div className="tab-bar">
         <button 

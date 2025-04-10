@@ -1,115 +1,116 @@
 /* Estilo base para toda a aplicação */
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-  
-  body, html {
-    height: 100%;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: transparent;
-    overflow: hidden;
-  }
-  
-  .app-container {
-    width: 100%;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    background-color: rgba(20, 20, 20, 0.85);
-    color: white;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-    backdrop-filter: blur(5px);
-  }
-  
-  /* Barra de abas */
-  .tab-bar {
-    display: flex;
-    background-color: rgba(40, 40, 40, 0.9);
-    padding: 10px 10px 0;
-    user-select: none;
-  }
-  
-  .tab-button {
-    padding: 8px 16px;
-    border: none;
-    background-color: transparent;
-    color: #ccc;
-    cursor: pointer;
-    font-size: 14px;
-    border-radius: 4px 4px 0 0;
-    transition: all 0.2s ease;
-  }
-  
-  .tab-button:hover {
-    background-color: rgba(60, 60, 60, 0.9);
-    color: #fff;
-  }
-  
-  .tab-button.active {
-    background-color: rgba(20, 20, 20, 0.95);
-    color: #fff;
-  }
-  
-  /* Área de conteúdo principal */
-  .content-area {
-    flex: 1;
-    padding: 16px;
-    overflow-y: auto;
-  }
-  
-  /* Estilos para scrollbar */
-  ::-webkit-scrollbar {
-    width: 8px;
-  }
-  
-  ::-webkit-scrollbar-track {
-    background: rgba(30, 30, 30, 0.5);
-  }
-  
-  ::-webkit-scrollbar-thumb {
-    background: rgba(80, 80, 80, 0.7);
-    border-radius: 4px;
-  }
-  
-  ::-webkit-scrollbar-thumb:hover {
-    background: rgba(100, 100, 100, 0.8);
-  }
-  
-  /* Botões e controles */
-  button, input, textarea, select {
-    font-family: inherit;
-  }
-  
-  button {
-    padding: 8px 16px;
-    background-color: #2563eb;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.2s;
-  }
-  
-  button:hover {
-    background-color: #1d4ed8;
-  }
-  
-  button:disabled {
-    background-color: #64748b;
-    cursor: not-allowed;
-  }
-  
-  /* Drag handle para mover a janela */
-  .drag-handle {
-    -webkit-app-region: drag;
-    height: 20px;
-    width: 100%;
-    cursor: move;
-    position: absolute;
-    top: 0;
-    left: 0;
-  }
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body, html {
+  height: 100%;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: transparent;
+  overflow: hidden;
+}
+
+.app-container {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: rgba(20, 20, 20, 0.85);
+  color: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(5px);
+}
+
+/* Barra de arrasto */
+.drag-bar {
+  height: 20px;
+  width: 100%;
+  -webkit-app-region: drag;
+  background-color: rgba(60, 60, 60, 0.7);
+  cursor: move;
+}
+
+/* Barra de abas */
+.tab-bar {
+  display: flex;
+  background-color: rgba(40, 40, 40, 0.9);
+  padding: 10px 10px 0;
+  user-select: none;
+  -webkit-app-region: drag;
+}
+
+.tab-button {
+  padding: 8px 16px;
+  border: none;
+  background-color: transparent;
+  color: #ccc;
+  cursor: pointer;
+  font-size: 14px;
+  border-radius: 4px 4px 0 0;
+  transition: all 0.2s ease;
+  -webkit-app-region: no-drag;
+}
+
+.tab-button:hover {
+  background-color: rgba(60, 60, 60, 0.9);
+  color: #fff;
+}
+
+.tab-button.active {
+  background-color: rgba(20, 20, 20, 0.95);
+  color: #fff;
+}
+
+/* Área de conteúdo principal */
+.content-area {
+  flex: 1;
+  padding: 16px;
+  overflow-y: auto;
+  -webkit-app-region: no-drag;
+}
+
+/* Estilos para scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(30, 30, 30, 0.5);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(80, 80, 80, 0.7);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 100, 100, 0.8);
+}
+
+/* Botões e controles */
+button, input, textarea, select {
+  font-family: inherit;
+}
+
+button {
+  padding: 8px 16px;
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+button:hover {
+  background-color: #1d4ed8;
+}
+
+button:disabled {
+  background-color: #64748b;
+  cursor: not-allowed;
+}
