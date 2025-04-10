@@ -1,5 +1,4 @@
 import { createClient } from '@supabase/supabase-js';
-import axios from 'axios';
 
 class SupabaseService {
   constructor() {
@@ -41,9 +40,8 @@ class SupabaseService {
     try {
       console.log('Iniciando upload de:', filePath);
       
-      // Converter arquivo para base64 (solução temporária)
-      const response = await fetch(`file://${filePath}`);
-      const blob = await response.blob();
+      // Ler o arquivo como buffer usando a API do Electron
+      const fileData = await window.electron.readFile(filePath);
       
       // Criar nome único para o arquivo
       const fileName = `screenshot-${Date.now()}.png`;
@@ -52,7 +50,7 @@ class SupabaseService {
       const { data, error } = await this.supabase
         .storage
         .from('screenshots')
-        .upload(fileName, blob, {
+        .upload(fileName, fileData, {
           contentType: 'image/png',
           upsert: false
         });
@@ -70,10 +68,7 @@ class SupabaseService {
       return urlData.publicUrl;
     } catch (error) {
       console.error('Erro ao fazer upload do screenshot:', error);
-      
-      // Temporariamente retornar URL simulada para testes
-      console.log('Retornando URL simulada para testes');
-      return `https://exemplo.com/screenshots/screenshot-${Date.now()}.png`;
+      throw error;
     }
   }
 }

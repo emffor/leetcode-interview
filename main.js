@@ -4,6 +4,7 @@ const isDev = require('electron-is-dev');
 const Store = require('electron-store');
 const { captureScreenshot } = require('./utils/screenshot');
 const http = require('http');
+const fs = require('fs').promises;
 
 // Configuração para armazenar dados persistentes
 const store = new Store();
@@ -172,6 +173,16 @@ ipcMain.handle('get-config', async (event, key) => {
 ipcMain.handle('set-config', async (event, key, value) => {
   store.set(key, value);
   return true;
+});
+
+// Adicione esse handler IPC
+ipcMain.handle('read-file', async (event, filePath) => {
+  try {
+    return await fs.readFile(filePath);
+  } catch (error) {
+    console.error('Erro ao ler arquivo:', error);
+    throw error;
+  }
 });
 
 ipcMain.handle('toggle-visibility', async (event, opacity) => {
