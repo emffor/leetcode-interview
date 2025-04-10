@@ -8,7 +8,7 @@ function App() {
   const [activeTab, setActiveTab] = useState('analysis');
   const [notification, setNotification] = useState({ show: false, message: '', type: 'info' });
   const [isConfigured, setIsConfigured] = useState(false);
-  const [opacity, setOpacity] = useState(0.6);
+  const [opacity, setOpacity] = useState(1.0);
   
   // Verifica se as configurações necessárias existem
   useEffect(() => {

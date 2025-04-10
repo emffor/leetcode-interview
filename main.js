@@ -56,8 +56,8 @@ async function createWindow() {
   mainWindow = new BrowserWindow({
     width: width * 0.5,
     height: height * 0.5,
-    x: Math.floor(width * 0.25),
-    y: Math.floor(height * 0.25),
+    x: Math.floor(width * 0.85), 
+    y: Math.floor(height * 0.7),
     frame: false, // Remove a moldura da janela
     transparent: true, // Torna a janela transparente
     alwaysOnTop: true, // Mantém a janela sempre visível
