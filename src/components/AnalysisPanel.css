@@ -1,0 +1,123 @@
+.analysis-panel {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    position: relative;
+  }
+  
+  .config-reminder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    gap: 20px;
+    text-align: center;
+  }
+  
+  .screenshot-status {
+    margin-bottom: 16px;
+    padding: 8px;
+    background-color: rgba(30, 30, 30, 0.6);
+    border-radius: 4px;
+  }
+  
+  .screenshot-status .success {
+    color: #4ade80;
+  }
+  
+  .custom-prompt {
+    margin-bottom: 16px;
+  }
+  
+  .custom-prompt textarea {
+    width: 100%;
+    background-color: rgba(40, 40, 40, 0.8);
+    color: white;
+    border: 1px solid rgba(100, 100, 100, 0.3);
+    border-radius: 4px;
+    padding: 8px;
+    resize: vertical;
+  }
+  
+  .analyze-button {
+    margin-bottom: 16px;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .analyze-button button {
+    width: 200px;
+  }
+  
+  .analysis-result {
+    flex: 1;
+    overflow-y: auto;
+    background-color: rgba(30, 30, 30, 0.6);
+    border-radius: 4px;
+    padding: 16px;
+    margin-bottom: 16px;
+    min-height: 200px;
+  }
+  
+  .loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: #a3a3a3;
+    font-style: italic;
+  }
+  
+  .no-analysis {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: #a3a3a3;
+    text-align: center;
+  }
+  
+  .result-content {
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  
+  .result-content pre {
+    font-family: 'Consolas', 'Monaco', monospace;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  
+  .shortcuts {
+    background-color: rgba(30, 30, 30, 0.6);
+    border-radius: 4px;
+    padding: 12px;
+    font-size: 13px;
+  }
+  
+  .shortcuts p {
+    margin-bottom: 8px;
+    font-weight: bold;
+  }
+  
+  .shortcuts ul {
+    list-style-type: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  
+  .shortcuts li {
+    display: flex;
+    align-items: center;
+  }
+  
+  .key {
+    background-color: rgba(80, 80, 80, 0.8);
+    padding: 2px 6px;
+    border-radius: 3px;
+    margin-right: 6px;
+    font-family: monospace;
+    border: 1px solid rgba(120, 120, 120, 0.4);
+  }

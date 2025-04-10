@@ -1,0 +1,74 @@
+.notification {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 12px 16px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-width: 300px;
+    max-width: 400px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    animation: slideIn 0.3s ease-out forwards;
+  }
+  
+  @keyframes slideIn {
+    from {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+  
+  .notification-content {
+    flex: 1;
+    margin-right: 12px;
+  }
+  
+  .notification-close {
+    background: transparent;
+    border: none;
+    color: inherit;
+    padding: 0;
+    font-size: 14px;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+    width: 24px;
+    height: 24px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .notification-close:hover {
+    opacity: 1;
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+  
+  /* Tipos de notificação */
+  .notification-success {
+    background-color: rgba(22, 163, 74, 0.9);
+    color: white;
+  }
+  
+  .notification-error {
+    background-color: rgba(220, 38, 38, 0.9);
+    color: white;
+  }
+  
+  .notification-warning {
+    background-color: rgba(234, 179, 8, 0.9);
+    color: white;
+  }
+  
+  .notification-info {
+    background-color: rgba(59, 130, 246, 0.9);
+    color: white;
+  }
