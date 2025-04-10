@@ -21,6 +21,10 @@ contextBridge.exposeInMainWorld('electron', {
     ipcRenderer.on('analyze-screenshot', () => callback());
   },
   
+  onOpacityChange: (callback) => {
+    ipcRenderer.on('opacity-changed', (_, opacity) => callback(opacity));
+  },
+  
   onError: (callback) => {
     ipcRenderer.on('error', (_, message) => callback(message));
   },

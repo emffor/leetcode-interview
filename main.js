@@ -117,17 +117,26 @@ app.on('window-all-closed', () => {
 function registerShortcuts() {
   // Atalho para opacidade 30%
   globalShortcut.register('Alt+1', () => {
-    if (mainWindow) mainWindow.setOpacity(0.3);
+    if (mainWindow) {
+      mainWindow.setOpacity(0.3);
+      mainWindow.webContents.send('opacity-changed', 0.3);
+    }
   });
 
   // Atalho para opacidade 60%
   globalShortcut.register('Alt+2', () => {
-    if (mainWindow) mainWindow.setOpacity(0.6);
+    if (mainWindow) {
+      mainWindow.setOpacity(0.6);
+      mainWindow.webContents.send('opacity-changed', 0.6);
+    }
   });
 
   // Atalho para opacidade 100%
   globalShortcut.register('Alt+3', () => {
-    if (mainWindow) mainWindow.setOpacity(1.0);
+    if (mainWindow) {
+      mainWindow.setOpacity(1.0);
+      mainWindow.webContents.send('opacity-changed', 1.0);
+    }
   });
 
   // Atalho para capturar screenshot (Alt+S)

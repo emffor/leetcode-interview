@@ -8,6 +8,7 @@ function App() {
   const [activeTab, setActiveTab] = useState('analysis');
   const [notification, setNotification] = useState({ show: false, message: '', type: 'info' });
   const [isConfigured, setIsConfigured] = useState(false);
+  const [opacity, setOpacity] = useState(0.6);
   
   // Verifica se as configurações necessárias existem
   useEffect(() => {
@@ -39,6 +40,12 @@ function App() {
       showNotification(message, 'error');
     });
     
+    // Ouvinte para mudanças de opacidade
+    window.electron.onOpacityChange((newOpacity) => {
+      setOpacity(newOpacity);
+      showNotification(`Opacidade ajustada para ${newOpacity * 100}%`, 'info');
+    });
+    
     // Limpa ouvintes ao desmontar
     return () => {
       // Electron não fornece método para remover listeners diretamente
@@ -57,7 +64,7 @@ function App() {
   };
   
   return (
-    <div className="app-container">
+    <div className="app-container" style={{ opacity }}>
       {/* Barra de arrasto */}
       <div className="drag-bar"></div>
       
