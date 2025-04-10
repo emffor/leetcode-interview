@@ -57,15 +57,15 @@ class SupabaseService {
       
       if (error) throw error;
       
-      // Obter URL pública
-      const { data: urlData } = this.supabase
+      // Obter URL assinada com prazo de 1 hora
+      const { data: urlData } = await this.supabase
         .storage
         .from('screenshots')
-        .getPublicUrl(fileName);
+        .createSignedUrl(fileName, 3600);
       
-      console.log('Upload realizado com sucesso:', urlData.publicUrl);
+      console.log('Upload realizado com sucesso:', urlData.signedUrl);
       
-      return urlData.publicUrl;
+      return urlData.signedUrl;
     } catch (error) {
       console.error('Erro ao fazer upload do screenshot:', error);
       throw error;
