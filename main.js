@@ -87,7 +87,7 @@ async function createWindow() {
       mainWindow.webContents.closeDevTools();
     });
   } else {
-    mainWindow.webContents.openDevTools({ mode: 'detach' });
+    // mainWindow.webContents.openDevTools({ mode: 'detach' });
   }
 
   // Limpa o objeto quando a janela é fechada
@@ -136,31 +136,6 @@ function registerShortcuts() {
     if (mainWindow) {
       mainWindow.setOpacity(1.0);
       mainWindow.webContents.send('opacity-changed', 1.0);
-    }
-  });
-
-  // Atalho para ocultar/exibir a janela (Alt+B)
-  globalShortcut.register('Alt+B', () => {
-    if (mainWindow) {
-      if (mainWindow.isVisible()) {
-        mainWindow.hide();
-      } else {
-        mainWindow.show();
-        mainWindow.focus();
-    
-
-        setTimeout(() => {
-            if(mainWindow && !mainWindow.isVisible()) {
-                console.warn("Janela ainda não está visível após show() e focus(). Tentando showInactive() + focus()");
-                mainWindow.showInactive(); 
-                mainWindow.focus();
-            } else if (mainWindow) {
-                console.log("Janela confirmada como visível."); 
-            }
-        }, 100); 
-      }
-    } else {
-        console.error('Erro: Tentativa de ocultar/mostrar, mas mainWindow não existe.'); // LOG
     }
   });
 
