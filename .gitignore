@@ -1,0 +1,49 @@
+# Dependências
+node_modules/
+package-lock.json
+yarn.lock
+
+# Compilados
+dist/
+build/
+release/
+out/
+
+# Configurações locais
+.env
+.env.local
+.env.*.local
+
+# Chaves e credenciais
+*.pem
+*.key
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Arquivos do sistema
+.DS_Store
+Thumbs.db
+.directory
+
+# Arquivos temporários
+*.tmp
+*.swp
+*.swo
+.eslintcache
+
+# IDE
+.idea/
+.vscode/
+*.sublime-*
+*.code-workspace
+
+# Electron
+.electron-builder.env
+
+# Dados do usuário
+userdata/
