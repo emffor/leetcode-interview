@@ -26,16 +26,16 @@ function isReactServerRunning() {
 // Espera o servidor React iniciar
 async function waitForReactServer(retries = 20, interval = 1000) {
   let attempts = 0;
-  
+
   while (attempts < retries) {
     const isRunning = await isReactServerRunning();
     if (isRunning) return true;
-    
+
     console.log(`Aguardando servidor React... (${attempts + 1}/${retries})`);
     await new Promise(resolve => setTimeout(resolve, interval));
     attempts++;
   }
-  
+
   return false;
 }
 
@@ -51,7 +51,7 @@ async function createWindow() {
   }
 
   const { width, height } = screen.getPrimaryDisplay().workAreaSize;
-  
+
   // Criar janela principal configurada para ser invisível
   mainWindow = new BrowserWindow({
     width: width * 0.5,
@@ -74,7 +74,7 @@ async function createWindow() {
   const loadURL = isDev
     ? 'http://localhost:3000'
     : `file://${path.join(__dirname, './build/index.html')}`;
-    
+
   console.log(`Carregando URL: ${loadURL}`);
   mainWindow.loadURL(loadURL);
 
@@ -97,10 +97,10 @@ async function createWindow() {
 // Inicialização do app
 app.whenReady().then(() => {
   createWindow();
-  
+
   // Registra atalhos globais
   registerShortcuts();
-  
+
   app.on('activate', function () {
     if (BrowserWindow.getAllWindows().length === 0) createWindow();
   });
@@ -139,42 +139,74 @@ function registerShortcuts() {
     }
   });
 
-  // Atalho para capturar screenshot (Alt+S)
-  globalShortcut.register('Alt+S', async () => {
-    try {
-      // Primeiro torna a janela invisível para não capturá-la no screenshot
-      const currentOpacity = mainWindow.getOpacity();
-      mainWindow.setOpacity(0);
-      
-      // Atrasa ligeiramente para garantir que a janela desapareceu
-      setTimeout(async () => {
-        // Captura o screenshot
-        const screenshotPath = await captureScreenshot();
-        
-        // Notifica o frontend
-        mainWindow.webContents.send('screenshot-captured', screenshotPath);
-        
-        // Restaura a opacidade original
-        mainWindow.setOpacity(currentOpacity);
-      }, 100);
-    } catch (error) {
-      console.error('Erro ao capturar screenshot:', error);
-      mainWindow.webContents.send('error', 'Falha ao capturar screenshot');
+  // Atalho para ocultar/exibir a janela (Alt+B)
+  globalShortcut.register('Alt+B', () => {
+    if (mainWindow) {
+      if (mainWindow.isVisible()) {
+        mainWindow.hide();
+      } else {
+        mainWindow.show();
+        mainWindow.focus();
+    
+
+        setTimeout(() => {
+            if(mainWindow && !mainWindow.isVisible()) {
+                console.warn("Janela ainda não está visível após show() e focus(). Tentando showInactive() + focus()");
+                mainWindow.showInactive(); 
+                mainWindow.focus();
+            } else if (mainWindow) {
+                console.log("Janela confirmada como visível."); 
+            }
+        }, 100); 
+      }
+    } else {
+        console.error('Erro: Tentativa de ocultar/mostrar, mas mainWindow não existe.'); // LOG
     }
   });
 
-  // Atalho para enviar screenshot para análise (Alt+Enter)
+
+  globalShortcut.register('Alt+S', async () => {
+    if (!mainWindow) return; 
+    try {
+      const currentOpacity = mainWindow.getOpacity();
+      const initiallyVisible = mainWindow.isVisible();
+
+      if (initiallyVisible) {
+         mainWindow.setOpacity(0); 
+      }
+
+      setTimeout(async () => {
+        try {
+            const screenshotPath = await captureScreenshot();
+            mainWindow.webContents.send('screenshot-captured', screenshotPath);
+            console.log('Screenshot capturado:', screenshotPath);
+        } catch (captureError) {
+            console.error('Erro durante a captura do screenshot:', captureError);
+             mainWindow.webContents.send('error', 'Falha ao capturar screenshot');
+        } finally {
+             if (initiallyVisible) {
+                 mainWindow.setOpacity(currentOpacity); 
+             }
+        }
+      }, 150); 
+    } catch (error) {
+      console.error('Erro no processo do atalho Alt+S:', error);
+       mainWindow.webContents.send('error', 'Falha geral no processo de screenshot');
+       if (mainWindow) mainWindow.setOpacity(mainWindow.getOpacity());
+    }
+  });
+
   globalShortcut.register('Alt+Enter', () => {
-    mainWindow.webContents.send('analyze-screenshot');
+    if (mainWindow) {
+        mainWindow.webContents.send('analyze-screenshot');
+    }
   });
 }
 
-// Desregistra todos os atalhos ao sair
 app.on('will-quit', () => {
   globalShortcut.unregisterAll();
 });
 
-// Comunicação IPC com o frontend
 ipcMain.handle('get-config', async (event, key) => {
   return store.get(key);
 });
@@ -184,7 +216,6 @@ ipcMain.handle('set-config', async (event, key, value) => {
   return true;
 });
 
-// Adicione esse handler IPC
 ipcMain.handle('read-file', async (event, filePath) => {
   try {
     return await fs.readFile(filePath);
