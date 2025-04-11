@@ -85,9 +85,9 @@ async function createWindow() {
   // Criar janela principal configurada para ser invisível
   mainWindow = new BrowserWindow({
     width: width * 0.4,
-    height: height * 0.8,
-    x: Math.floor(width * 0.6),  // Posiciona à direita da tela
-    y: Math.floor(height * 0.1), // Posiciona no topo
+    height: height * 1.0,
+    x: Math.floor(width * 0.85),  // Posiciona à direita da tela
+    y: Math.floor(height * 0.7), // Posiciona no topo
     frame: false,                // Remove a moldura da janela
     transparent: true,           // Torna a janela transparente
     alwaysOnTop: true,           // Mantém a janela sempre visível
