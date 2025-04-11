@@ -1,4 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
+import ReactMarkdown from 'react-markdown';
+import rehypeHighlight from 'rehype-highlight';
+import remarkGfm from 'remark-gfm';
 import supabaseService from '../services/supabaseService';
 import geminiService from '../services/geminiService';
 import './AnalysisPanel.css';
@@ -145,7 +148,15 @@ const AnalysisPanel = ({ isConfigured, showNotification, setActiveTab }) => {
               <div className="loading">Processando análise...</div>
             ) : analysis ? (
               <div className="result-content">
-                <pre>{analysis}</pre>
+                <ReactMarkdown 
+                  components={{
+                    div: ({node, ...props}) => <div className="markdown-content" {...props} />
+                  }}
+                  rehypePlugins={[rehypeHighlight]}
+                  remarkPlugins={[remarkGfm]}
+                >
+                  {analysis}
+                </ReactMarkdown>
               </div>
             ) : (
               <div className="no-analysis">
