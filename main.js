@@ -9,6 +9,7 @@ const fs = require('fs').promises;
 // Configuração para armazenar dados persistentes
 const store = new Store();
 
+// Armazena última opacidade usada
 let lastOpacity = 0.6;
 let isVisible = true;
 let invisibilityTimer = null;
@@ -115,8 +116,6 @@ async function createWindow() {
     mainWindow.webContents.on('devtools-opened', () => {
       mainWindow.webContents.closeDevTools();
     });
-  } else {
-    // mainWindow.webContents.openDevTools({ mode: 'detach' });
   }
 
   // Limpa o objeto quando a janela é fechada
@@ -157,6 +156,8 @@ function registerShortcuts() {
   // Atalho para opacidade 60%
   globalShortcut.register('Alt+2', () => {
     if (mainWindow) {
+      lastOpacity = 0.6;
+      isVisible = true;
       mainWindow.setOpacity(0.6);
       mainWindow.webContents.send('opacity-changed', 0.6);
     }
@@ -165,49 +166,45 @@ function registerShortcuts() {
   // Atalho para opacidade 100%
   globalShortcut.register('Alt+3', () => {
     if (mainWindow) {
+      lastOpacity = 1.0;
+      isVisible = true;
       mainWindow.setOpacity(1.0);
       mainWindow.webContents.send('opacity-changed', 1.0);
     }
   });
 
+  // Atalho para alternar visibilidade (Alt+B)
   globalShortcut.register('Alt+B', () => {
     if (!mainWindow) return;
     
     isVisible = !isVisible;
     
     if (isVisible) {
+      mainWindow.show();
       clearTimeout(invisibilityTimer);
       invisibilityTimer = null;
-      mainWindow.setOpacity(lastOpacity);
-      mainWindow.setIgnoreMouseEvents(false);
-      mainWindow.webContents.send('opacity-changed', lastOpacity);
     } else {
-      lastOpacity = mainWindow.getOpacity();
-      mainWindow.setOpacity(0);
-      mainWindow.setIgnoreMouseEvents(true);
-      mainWindow.webContents.send('opacity-changed', 0);
+      mainWindow.hide();
       
-      // Segurança: restaura após 600 segundos
       invisibilityTimer = setTimeout(() => {
         isVisible = true;
-        mainWindow.setOpacity(lastOpacity);
-        mainWindow.setIgnoreMouseEvents(false);
-        mainWindow.webContents.send('opacity-changed', lastOpacity);
-      }, 600000); // 10 minutes
+        mainWindow.show();
+      }, 600000); 
     }
   });
 
+  // Atalho para capturar screenshot (Alt+S)
   globalShortcut.register('Alt+S', async () => {
     if (!mainWindow) return; 
     try {
-      // Salva o estado atual da janela
-      const wasVisible = !mainWindow.isMinimized() && mainWindow.isVisible();
+      // Salva o estado atual
+      const wasVisible = isVisible;
       const previousOpacity = mainWindow.getOpacity();
       
-      // Oculta completamente a janela (não apenas torna transparente)
+      // Oculta completamente a aplicação
       mainWindow.hide();
       
-      // Aguarda para garantir que a ocultação foi aplicada
+      // Aguarda para garantir que a janela desapareceu
       await new Promise(resolve => setTimeout(resolve, 200));
       
       try {
@@ -221,10 +218,15 @@ function registerShortcuts() {
         console.error('Erro ao capturar screenshot:', error);
         mainWindow.webContents.send('error', 'Falha ao capturar screenshot');
       } finally {
-        // Restaura a janela para seu estado anterior
+        // Restaura a janela com o estado anterior
+        mainWindow.show();
+        
+        // Se estava visível antes, restaura a opacidade anterior
         if (wasVisible) {
-          mainWindow.show();
           mainWindow.setOpacity(previousOpacity);
+        } else {
+          // Se estava invisível, mantém invisível (opacidade 0)
+          mainWindow.setOpacity(0);
         }
       }
     } catch (error) {
@@ -236,13 +238,14 @@ function registerShortcuts() {
     }
   });
 
+  // Atalho para enviar screenshot para análise (Alt+Enter)
   globalShortcut.register('Alt+Enter', () => {
     if (mainWindow) {
         mainWindow.webContents.send('analyze-screenshot');
     }
   });
   
-  // Novos atalhos para mover a janela
+  // Atalhos para mover a janela
   globalShortcut.register('Alt+Up', () => {
     moveWindow('up');
   });
@@ -259,6 +262,7 @@ function registerShortcuts() {
     moveWindow('right');
   });
 
+  // Atalho para reiniciar contexto (Alt+G)
   globalShortcut.register('Alt+G', () => {
     if (mainWindow) {
       mainWindow.webContents.send('reset-context');
@@ -273,6 +277,7 @@ app.on('will-quit', () => {
 // Desabilita a aceleração de hardware para evitar problemas de renderização
 app.disableHardwareAcceleration();
 
+// Handlers IPC
 ipcMain.handle('get-config', async (event, key) => {
   return store.get(key);
 });
@@ -293,6 +298,7 @@ ipcMain.handle('read-file', async (event, filePath) => {
 
 ipcMain.handle('toggle-visibility', async (event, opacity) => {
   if (mainWindow) {
+    lastOpacity = opacity;
     mainWindow.setOpacity(opacity);
     return true;
   }
