@@ -85,13 +85,13 @@ async function createWindow() {
   // Criar janela principal configurada para ser invisível
   mainWindow = new BrowserWindow({
     width: width * 0.4,
-    height: height * 1.0,
-    x: Math.floor(width * 0.85), 
-    y: Math.floor(height * 0.7),
-    frame: false, // Remove a moldura da janela
-    transparent: true, // Torna a janela transparente
-    alwaysOnTop: true, // Mantém a janela sempre visível
-    skipTaskbar: true, // Não exibe na barra de tarefas
+    height: height * 0.8,
+    x: Math.floor(width * 0.6),  // Posiciona à direita da tela
+    y: Math.floor(height * 0.1), // Posiciona no topo
+    frame: false,                // Remove a moldura da janela
+    transparent: true,           // Torna a janela transparente
+    alwaysOnTop: true,           // Mantém a janela sempre visível
+    skipTaskbar: true,           // Não exibe na barra de tarefas
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
@@ -181,15 +181,18 @@ function registerShortcuts() {
     
     if (isVisible) {
       mainWindow.show();
+      mainWindow.setOpacity(lastOpacity);
       clearTimeout(invisibilityTimer);
       invisibilityTimer = null;
     } else {
       mainWindow.hide();
       
+      // Restaura automaticamente após 10 minutos para evitar perder acesso
       invisibilityTimer = setTimeout(() => {
         isVisible = true;
         mainWindow.show();
-      }, 600000); 
+        mainWindow.setOpacity(lastOpacity);
+      }, 600000); // 10 minutos
     }
   });
 
