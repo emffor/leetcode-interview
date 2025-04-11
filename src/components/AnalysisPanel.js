@@ -79,6 +79,11 @@ const AnalysisPanel = ({ isConfigured, showNotification, setActiveTab }) => {
         <li><span className="key">Alt+3</span> - Opacidade 100%</li>
         <li><span className="key">Alt+S</span> - Capturar screenshot</li>
         <li><span className="key">Alt+Enter</span> - Analisar screenshot</li>
+        <li><span className="key">Alt+B</span> - Ocultar/Exibir janela</li>
+        <li><span className="key">Alt+↑</span> - Mover janela para cima</li>
+        <li><span className="key">Alt+↓</span> - Mover janela para baixo</li>
+        <li><span className="key">Alt+←</span> - Mover janela para esquerda</li>
+        <li><span className="key">Alt+→</span> - Mover janela para direita</li>
       </ul>
     </div>
   );

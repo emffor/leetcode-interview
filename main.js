@@ -43,6 +43,31 @@ async function waitForReactServer(retries = 20, interval = 1000) {
   return false;
 }
 
+// Função para mover a janela
+function moveWindow(direction, pixels = 50) {
+  if (!mainWindow) return;
+  
+  const [x, y] = mainWindow.getPosition();
+  
+  switch(direction) {
+    case 'up':
+      mainWindow.setPosition(x, y - pixels);
+      break;
+    case 'down':
+      mainWindow.setPosition(x, y + pixels);
+      break;
+    case 'left':
+      mainWindow.setPosition(x - pixels, y);
+      break;
+    case 'right':
+      mainWindow.setPosition(x + pixels, y);
+      break;
+  }
+  
+  // Notifica o frontend da mudança de posição
+  mainWindow.webContents.send('position-changed', { x, y });
+}
+
 async function createWindow() {
   // Aguarda o servidor React iniciar no modo de desenvolvimento
   if (isDev) {
@@ -207,6 +232,23 @@ function registerShortcuts() {
     if (mainWindow) {
         mainWindow.webContents.send('analyze-screenshot');
     }
+  });
+  
+  // Novos atalhos para mover a janela
+  globalShortcut.register('Alt+Up', () => {
+    moveWindow('up');
+  });
+  
+  globalShortcut.register('Alt+Down', () => {
+    moveWindow('down');
+  });
+  
+  globalShortcut.register('Alt+Left', () => {
+    moveWindow('left');
+  });
+  
+  globalShortcut.register('Alt+Right', () => {
+    moveWindow('right');
   });
 }
 

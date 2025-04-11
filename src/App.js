@@ -46,6 +46,11 @@ function App() {
       showNotification(`Opacidade ajustada para ${newOpacity * 100}%`, 'info');
     });
     
+    // Ouvinte para mudanças de posição
+    // window.electron.onPositionChange((position) => {
+    //   showNotification(`Janela movida para posição (${position.x}, ${position.y})`, 'info');
+    // });
+    
     // Limpa ouvintes ao desmontar
     return () => {
       // Electron não fornece método para remover listeners diretamente
