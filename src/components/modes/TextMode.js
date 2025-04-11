@@ -14,25 +14,32 @@ const TextMode = ({ showNotification, isConfigured, setActiveTab }) => {
   // Configura ouvintes de eventos
   useEffect(() => {
     // Evento para analisar texto (Alt+Enter)
-    window.electron.onAnalyzeScreenshot(() => {
+    const handleKeyEvent = () => {
       if (customPrompt) {
         handleTextAnalysis();
       } else {
-        showNotification('Digite um prompt para análise', 'warning');
+        showNotification('Digite um problema para análise', 'warning');
       }
-    });
+    };
+    
+    window.electron.onAnalyzeScreenshot(handleKeyEvent);
     
     // Evento para resetar o contexto (Alt+G)
     window.electron.onResetContext(() => {
       setAnalysis('');
       setCustomPrompt('');
+      showNotification('Contexto reiniciado', 'info');
     });
-  }, [customPrompt]);
+    
+    return () => {
+      // Cleanup seria ideal aqui, mas a API do electron não fornece método direto
+    };
+  }, [customPrompt, showNotification]);
 
   // Função para analisar texto
   const handleTextAnalysis = async () => {
     if (!customPrompt || customPrompt.trim() === '') {
-      showNotification('Digite um prompt para análise', 'warning');
+      showNotification('Digite um problema para análise', 'warning');
       return;
     }
     
@@ -52,7 +59,7 @@ const TextMode = ({ showNotification, isConfigured, setActiveTab }) => {
       
       showNotification('Análise concluída!', 'success');
     } catch (error) {
-      console.error('Erro ao processar prompt de texto:', error);
+      console.error('Erro ao processar problema:', error);
       showNotification(`Erro: ${error.message}`, 'error');
     } finally {
       setIsLoading(false);
@@ -64,7 +71,7 @@ const TextMode = ({ showNotification, isConfigured, setActiveTab }) => {
       {/* Área de prompt */}
       <div className="custom-prompt">
         <textarea 
-          placeholder="Digite seu problema ou questão aqui para análise direta"
+          placeholder="Cole ou digite o problema de programação aqui para análise"
           value={customPrompt}
           onChange={(e) => setCustomPrompt(e.target.value)}
           rows={5}
@@ -86,7 +93,7 @@ const TextMode = ({ showNotification, isConfigured, setActiveTab }) => {
         {isLoading ? (
           <div className="loading">Processando análise...</div>
         ) : analysis ? (
-          <div className="result-content">
+          <div className="result-content markdown-content">
             <ReactMarkdown 
               rehypePlugins={[rehypeHighlight]}
               remarkPlugins={[remarkGfm]}
@@ -96,7 +103,7 @@ const TextMode = ({ showNotification, isConfigured, setActiveTab }) => {
           </div>
         ) : (
           <div className="no-analysis">
-            Digite um prompt e clique em Analisar para ver os resultados
+            Digite um problema e clique em Analisar para ver a solução
           </div>
         )}
       </div>

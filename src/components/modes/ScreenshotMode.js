@@ -18,7 +18,7 @@ const ScreenshotMode = ({ showNotification, isConfigured, setActiveTab }) => {
     // Evento quando um screenshot é capturado
     window.electron.onScreenshotCaptured((path) => {
       setScreenshotPath(path);
-      showNotification('Screenshot capturado com sucesso!', 'success');
+      showNotification('Screenshot capturado!', 'success');
     });
     
     // Evento para analisar o screenshot (Alt+Enter)
@@ -26,7 +26,7 @@ const ScreenshotMode = ({ showNotification, isConfigured, setActiveTab }) => {
       if (screenshotPath) {
         handleAnalyzeScreenshot();
       } else {
-        showNotification('Capture um screenshot primeiro (Alt+S)', 'warning');
+        showNotification('Capture screenshot primeiro (Alt+S)', 'warning');
       }
     });
     
@@ -35,13 +35,18 @@ const ScreenshotMode = ({ showNotification, isConfigured, setActiveTab }) => {
       setScreenshotPath(null);
       setAnalysis('');
       setCustomPrompt('');
+      showNotification('Contexto reiniciado', 'info');
     });
-  }, [screenshotPath]);
+    
+    return () => {
+      // Cleanup seria ideal aqui, mas a API do electron não fornece método direto
+    };
+  }, [screenshotPath, showNotification]);
 
   // Função para analisar o screenshot
   const handleAnalyzeScreenshot = async () => {
     if (!screenshotPath) {
-      showNotification('Capture um screenshot primeiro (Alt+S)', 'warning');
+      showNotification('Capture screenshot primeiro (Alt+S)', 'warning');
       return;
     }
     
@@ -78,17 +83,17 @@ const ScreenshotMode = ({ showNotification, isConfigured, setActiveTab }) => {
         {screenshotPath ? (
           <p className="success">Screenshot capturado e pronto para análise</p>
         ) : (
-          <p className="title">Pressione Alt+S para capturar um screenshot</p>
+          <p className="title">Pressione Alt+S para capturar screenshot</p>
         )}
       </div>
       
       {/* Campo de prompt personalizado */}
       <div className="custom-prompt">
         <textarea 
-          placeholder="Prompt personalizado para a IA (opcional)"
+          placeholder="Instruções adicionais (opcional)"
           value={customPrompt}
           onChange={(e) => setCustomPrompt(e.target.value)}
-          rows={3}
+          rows={2}
         />
       </div>
       
@@ -107,7 +112,7 @@ const ScreenshotMode = ({ showNotification, isConfigured, setActiveTab }) => {
         {isLoading ? (
           <div className="loading">Processando análise...</div>
         ) : analysis ? (
-          <div className="result-content">
+          <div className="result-content markdown-content">
             <ReactMarkdown 
               rehypePlugins={[rehypeHighlight]}
               remarkPlugins={[remarkGfm]}
@@ -117,7 +122,7 @@ const ScreenshotMode = ({ showNotification, isConfigured, setActiveTab }) => {
           </div>
         ) : (
           <div className="no-analysis">
-            Capture um screenshot e clique em Analisar para ver os resultados
+            Capture screenshot e clique em Analisar para ver solução
           </div>
         )}
       </div>
