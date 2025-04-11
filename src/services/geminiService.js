@@ -47,11 +47,12 @@ class GeminiService {
           .reduce((data, byte) => data + String.fromCharCode(byte), '')
       );
       
-      // Construir prompt base
-      const basePrompt = 
-        "Você é um assistente para entrevistas de programação. Analise esta imagem de código ou problema " +
-        "e forneça: 1) Identificação do problema, 2) Explicação detalhada, 3) Solução otimizada em código, " +
-        "4) Análise de complexidade. Use markdown para formatação.";
+      // Construir prompt base - prompt anterior 
+        // "Você é um assistente para entrevistas de programação. Analise esta imagem de código ou problema " +
+        // "e forneça: 1) Identificação do problema, 2) Explicação detalhada, 3) Solução otimizada em código, " +
+        // "4) Análise de complexidade. Use markdown para formatação.";
+        const basePrompt = "Analise esta imagem de código. Forneça: 1) Problema identificado 2) Explicação rápida 3) Solução otimizada com código 4) Complexidade (tempo/espaço). Responda em português, objetivamente e com formatação markdown.";
+      
       
       // Combinar com prompt personalizado se existir
       const finalPrompt = customPrompt ? 
