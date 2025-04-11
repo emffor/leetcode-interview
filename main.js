@@ -118,6 +118,7 @@ async function createWindow() {
     });
   }
 
+  mainWindow.webContents.openDevTools();
   // Limpa o objeto quando a janela é fechada
   mainWindow.on('closed', () => (mainWindow = null));
 }

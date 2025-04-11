@@ -13,15 +13,16 @@ const TextMode = ({ showNotification, isConfigured, setActiveTab }) => {
   
   // Configura ouvintes de eventos
   useEffect(() => {
-    // Evento para analisar texto (Alt+Enter)
+    // Permite apenas uma única chamada
     const handleKeyEvent = () => {
-      if (customPrompt) {
+      if (customPrompt && !isLoading) {
         handleTextAnalysis();
-      } else {
+      } else if (!customPrompt) {
         showNotification('Digite um problema para análise', 'warning');
       }
     };
     
+    // Remove listener anterior e adiciona novo
     window.electron.onAnalyzeScreenshot(handleKeyEvent);
     
     // Evento para resetar o contexto (Alt+G)
@@ -31,22 +32,23 @@ const TextMode = ({ showNotification, isConfigured, setActiveTab }) => {
       showNotification('Contexto reiniciado', 'info');
     });
     
-    return () => {
-      // Cleanup seria ideal aqui, mas a API do electron não fornece método direto
-    };
-  }, [customPrompt, showNotification]);
+  }, [customPrompt, isLoading, showNotification]);
 
-  // Função para analisar texto
+  // Função para analisar texto (uma única vez)
   const handleTextAnalysis = async () => {
     if (!customPrompt || customPrompt.trim() === '') {
       showNotification('Digite um problema para análise', 'warning');
       return;
     }
     
+    // Previne múltiplas requisições
+    if (isLoading) return;
+    
     setIsLoading(true);
     
     try {
-      // Análise direta com Gemini usando apenas texto
+      // Uma única chamada para a API
+      console.log('Enviando análise para Gemini...');
       const result = await geminiService.analyzeTextOnly(customPrompt);
       
       // Atualiza a UI

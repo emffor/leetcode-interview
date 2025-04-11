@@ -117,10 +117,10 @@ class GeminiService {
     try {
       console.log('Analisando texto:', prompt);
       
-      // Combinar prompt base com o prompt do usuário
-      const finalPrompt = `${this.prompts.text}\n\nProblema: ${prompt}`;
+      // Simplificando o prompt para modo texto
+      const finalPrompt = `${this.prompts.text}\n\n${prompt}`;
       
-      // Preparar payload para a API Gemini sem imagem
+      // Preparar payload para a API Gemini (apenas texto)
       const payload = {
         contents: [
           {
@@ -151,13 +151,20 @@ class GeminiService {
           response.data.candidates && 
           response.data.candidates[0] && 
           response.data.candidates[0].content &&
-          response.data.candidates[0].content.parts) {
+          response.data.candidates[0].content.parts &&
+          response.data.candidates[0].content.parts[0]) {
         return response.data.candidates[0].content.parts[0].text;
       }
       
       throw new Error('Formato de resposta inesperado da API Gemini');
     } catch (error) {
       console.error('Erro ao analisar texto com Gemini:', error);
+      
+      // Verificar se é erro 429 (Too Many Requests)
+      if (error.response && error.response.status === 429) {
+        return "**Erro 429: Muitas requisições**\n\nAguarde um momento antes de tentar novamente.";
+      }
+      
       throw error;
     }
   }
