@@ -118,6 +118,10 @@
     padding: 2px 6px;
     border-radius: 3px;
     margin-right: 6px;
-    font-family: monospace;
+    font-size: 10px;
     border: 1px solid rgba(120, 120, 120, 0.4);
+  }
+
+  .text {
+    font-size: 9px;
   }
