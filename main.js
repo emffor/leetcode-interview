@@ -58,8 +58,8 @@ async function createWindow() {
 
   // Criar janela principal configurada para ser invisível
   mainWindow = new BrowserWindow({
-    width: width * 0.5,
-    height: height * 0.5,
+    width: width * 0.3,
+    height: height * 0.95,
     x: Math.floor(width * 0.85), 
     y: Math.floor(height * 0.7),
     frame: false, // Remove a moldura da janela
@@ -162,13 +162,13 @@ function registerShortcuts() {
       mainWindow.setIgnoreMouseEvents(true);
       mainWindow.webContents.send('opacity-changed', 0);
       
-      // Segurança: restaura após 20 segundos
+      // Segurança: restaura após 600 segundos
       invisibilityTimer = setTimeout(() => {
         isVisible = true;
         mainWindow.setOpacity(lastOpacity);
         mainWindow.setIgnoreMouseEvents(false);
         mainWindow.webContents.send('opacity-changed', lastOpacity);
-      }, 20000);
+      }, 600000); // 10 minutes
     }
   });
 
