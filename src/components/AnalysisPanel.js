@@ -84,9 +84,7 @@ const AnalysisPanel = ({ isConfigured, showNotification, setActiveTab }) => {
     <div className="shortcuts">
       <p>Atalhos:</p>
       <ul>
-        <li className="text"><span className="key">Alt+1</span> - Opa. 30%</li>
-        <li className="text"><span className="key">Alt+2</span> - Opa. 60%</li>
-        <li className="text"><span className="key">Alt+3</span> - Opa. 100%</li>
+        <li className="text"><span className="key">Alt+123</span> - Opa. 30/60/100%</li>
         <li className="text"><span className="key">Alt+S</span> - Screenshot</li>
         <li className="text"><span className="key">Alt+Enter</span> - Anal. screenshot</li>
         <li className="text"><span className="key">Alt+B</span> - Ocultar/Exibir</li>
