@@ -117,7 +117,7 @@ const AnalysisPanel = ({ isConfigured, showNotification, setActiveTab }) => {
             {screenshotPath ? (
               <p className="success">Screenshot capturado e pronto para análise</p>
             ) : (
-              <p>Pressione Alt+S para capturar um screenshot</p>
+              <p className='title'>Pressione Alt+S para capturar um screenshot</p>
             )}
           </div>
           

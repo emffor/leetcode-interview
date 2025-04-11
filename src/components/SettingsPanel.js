@@ -118,18 +118,18 @@ const SettingsPanel = ({ showNotification, setIsConfigured }) => {
       <div className="settings-section">
         <h3>Supabase</h3>
         <div className="form-group">
-          <label htmlFor="supabase-url">URL do Supabase</label>
+          <label htmlFor="supabase-url" className='subtitle'>URL do Supabase</label>
           <input 
             id="supabase-url"
             type="text" 
             value={supabaseUrl}
-            onChange={(e) => setSupabaseUrl(e.target.value)}
+            onChange={(e) => setSupabaseUrl(e.target.value)} 
             placeholder="https://example.supabase.co"
           />
         </div>
         
         <div className="form-group">
-          <label htmlFor="supabase-key">Chave Pública do Supabase</label>
+          <label htmlFor="supabase-key" className='subtitle'>Chave Pública do Supabase</label>
           <input 
             id="supabase-key"
             type="password" 

@@ -270,6 +270,9 @@ app.on('will-quit', () => {
   globalShortcut.unregisterAll();
 });
 
+// Desabilita a aceleração de hardware para evitar problemas de renderização
+app.disableHardwareAcceleration();
+
 ipcMain.handle('get-config', async (event, key) => {
   return store.get(key);
 });
