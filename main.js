@@ -258,6 +258,12 @@ function registerShortcuts() {
   globalShortcut.register('Alt+Right', () => {
     moveWindow('right');
   });
+
+  globalShortcut.register('Alt+G', () => {
+    if (mainWindow) {
+      mainWindow.webContents.send('reset-context');
+    }
+  });
 }
 
 app.on('will-quit', () => {

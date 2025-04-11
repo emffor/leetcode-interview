@@ -28,6 +28,16 @@ const AnalysisPanel = ({ isConfigured, showNotification, setActiveTab }) => {
         showNotification('Capture um screenshot primeiro (Alt+S)', 'warning');
       }
     });
+    
+    // Evento para resetar o contexto (Alt+G)
+    window.electron.onResetContext(() => {
+      // Limpa todos os estados
+      setScreenshotPath(null);
+      setAnalysis('');
+      setCustomPrompt('');
+      
+      showNotification('Contexto reiniciado com sucesso! Pronto para novo problema.', 'success');
+    });
   }, [isConfigured, screenshotPath]);
 
   // Função para analisar o screenshot
@@ -80,6 +90,7 @@ const AnalysisPanel = ({ isConfigured, showNotification, setActiveTab }) => {
         <li className="text"><span className="key">Alt+S</span> - Screenshot</li>
         <li className="text"><span className="key">Alt+Enter</span> - Anal. screenshot</li>
         <li className="text"><span className="key">Alt+B</span> - Ocultar/Exibir</li>
+        <li className="text"><span className="key">Alt+G</span> - Reiniciar contexto</li>
         <li className="text"><span className="key">Alt+↑</span> - Mover cima</li>
         <li className="text"><span className="key">Alt+↓</span> - Mover baixo</li>
         <li className="text"><span className="key">Alt+←</span> - Mover esquerda</li>
