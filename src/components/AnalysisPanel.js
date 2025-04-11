@@ -74,16 +74,16 @@ const AnalysisPanel = ({ isConfigured, showNotification, setActiveTab }) => {
     <div className="shortcuts">
       <p>Atalhos:</p>
       <ul>
-        <li className="text"><span className="key">Alt+1</span> - Opacidade 30%</li>
-        <li className="text"><span className="key">Alt+2</span> - Opacidade 60%</li>
-        <li className="text"><span className="key">Alt+3</span> - Opacidade 100%</li>
-        <li className="text"><span className="key">Alt+S</span> - Capturar screenshot</li>
-        <li className="text"><span className="key">Alt+Enter</span> - Analisar screenshot</li>
-        <li className="text"><span className="key">Alt+B</span> - Ocultar/Exibir janela</li>
-        <li className="text"><span className="key">Alt+↑</span> - Mover janela para cima</li>
-        <li className="text"><span className="key">Alt+↓</span> - Mover janela para baixo</li>
-        <li className="text"><span className="key">Alt+←</span> - Mover janela para esquerda</li>
-        <li className="text"><span className="key">Alt+→</span> - Mover janela para direita</li>
+        <li className="text"><span className="key">Alt+1</span> - Opa. 30%</li>
+        <li className="text"><span className="key">Alt+2</span> - Opa. 60%</li>
+        <li className="text"><span className="key">Alt+3</span> - Opa. 100%</li>
+        <li className="text"><span className="key">Alt+S</span> - Screenshot</li>
+        <li className="text"><span className="key">Alt+Enter</span> - Anal. screenshot</li>
+        <li className="text"><span className="key">Alt+B</span> - Ocultar/Exibir</li>
+        <li className="text"><span className="key">Alt+↑</span> - Mover cima</li>
+        <li className="text"><span className="key">Alt+↓</span> - Mover baixo</li>
+        <li className="text"><span className="key">Alt+←</span> - Mover esquerda</li>
+        <li className="text"><span className="key">Alt+→</span> - Mover direita</li>
       </ul>
     </div>
   );
