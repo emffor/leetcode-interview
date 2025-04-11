@@ -200,31 +200,39 @@ function registerShortcuts() {
   globalShortcut.register('Alt+S', async () => {
     if (!mainWindow) return; 
     try {
-      const currentOpacity = mainWindow.getOpacity();
-      const initiallyVisible = mainWindow.isVisible();
-
-      if (initiallyVisible) {
-         mainWindow.setOpacity(0); 
-      }
-
-      setTimeout(async () => {
-        try {
-            const screenshotPath = await captureScreenshot();
-            mainWindow.webContents.send('screenshot-captured', screenshotPath);
-            console.log('Screenshot capturado:', screenshotPath);
-        } catch (captureError) {
-            console.error('Erro durante a captura do screenshot:', captureError);
-             mainWindow.webContents.send('error', 'Falha ao capturar screenshot');
-        } finally {
-             if (initiallyVisible) {
-                 mainWindow.setOpacity(currentOpacity); 
-             }
+      // Salva o estado atual da janela
+      const wasVisible = !mainWindow.isMinimized() && mainWindow.isVisible();
+      const previousOpacity = mainWindow.getOpacity();
+      
+      // Oculta completamente a janela (não apenas torna transparente)
+      mainWindow.hide();
+      
+      // Aguarda para garantir que a ocultação foi aplicada
+      await new Promise(resolve => setTimeout(resolve, 200));
+      
+      try {
+        // Captura a tela sem a janela visível
+        const screenshotPath = await captureScreenshot();
+        
+        // Notifica o frontend
+        mainWindow.webContents.send('screenshot-captured', screenshotPath);
+        console.log('Screenshot capturado:', screenshotPath);
+      } catch (error) {
+        console.error('Erro ao capturar screenshot:', error);
+        mainWindow.webContents.send('error', 'Falha ao capturar screenshot');
+      } finally {
+        // Restaura a janela para seu estado anterior
+        if (wasVisible) {
+          mainWindow.show();
+          mainWindow.setOpacity(previousOpacity);
         }
-      }, 150); 
+      }
     } catch (error) {
-      console.error('Erro no processo do atalho Alt+S:', error);
-       mainWindow.webContents.send('error', 'Falha geral no processo de screenshot');
-       if (mainWindow) mainWindow.setOpacity(mainWindow.getOpacity());
+      console.error('Erro geral no processo:', error);
+      
+      // Garante que a janela seja restaurada em caso de erro
+      mainWindow.show();
+      mainWindow.setOpacity(lastOpacity); 
     }
   });
 
