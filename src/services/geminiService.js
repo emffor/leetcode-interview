@@ -5,12 +5,6 @@ class GeminiService {
     this.apiKey = null;
     this.initialized = false;
     this.baseUrl = 'https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash-lite:generateContent';
-    
-    // Prompts base para cada modo
-    this.prompts = {
-      screenshot: "Analise a imagem do problema e responda com: 1) Problema identificado (uma frase) 2) Explicação rápida (uma frases curta simples e que eu lendo uma pessoa não note que eu esteja lendo a frase) 3) Código comentado que resolve o problema. Use formatação markdown.",
-      text: "Como melhorar [aspecto relevante] em [tecnologia]? Dicas práticas: 1. [Técnica específica com benefício imediato] 2. [Ferramenta/método com impacto direto] 3. [Abordagem avançada com diferencial técnico] Por quê funciona: [Explicação técnica concisa conectando as três dicas]. [Exemplo real de implementação]. [Benefício mensurável para performance/manutenção]."
-    };
   }
 
   async initialize() {
@@ -47,16 +41,20 @@ class GeminiService {
       
       // Buscar a imagem da URL
       const imageResponse = await axios.get(imageUrl, { responseType: 'arraybuffer' });
-      // Converter para Base64
+      // Converter para Base64 usando btoa
       const base64Image = btoa(
         new Uint8Array(imageResponse.data)
           .reduce((data, byte) => data + String.fromCharCode(byte), '')
       );
       
+      // Construir prompt base
+      // const basePrompt = "Analise esta imagem de código. Forneça: 1) Problema identificado 2) Explicação rápida 3) Solução otimizada com código 4) Complexidade (tempo/espaço). Responda em português, objetivamente e com formatação markdown.";
+      // const basePrompt = "Extraia SOMENTE o código da solução desta imagem. 1) Problema identificado resposta curta. 2) Explicação rápida e curta. Retorne apenas o bloco de código que resolve o problema objetivamente e com formatação markdown.";
+      const basePrompt = "Analise a imagem do problema e responda com: 1) Problema identificado (uma frase) 2) Explicação rápida (uma frases curta simples e que eu lendo uma pessoa não note que eu esteja lendo a frase) 3) Código comentado que resolve o problema. Use formatação markdown.";
       // Combinar com prompt personalizado se existir
       const finalPrompt = customPrompt ? 
-        `${this.prompts.screenshot}\n\nInstruções adicionais: ${customPrompt}` : 
-        this.prompts.screenshot;
+        `${basePrompt}\n\nInstruções adicionais: ${customPrompt}` : 
+        basePrompt;
       
       // Preparar payload para a API Gemini
       const payload = {
@@ -106,6 +104,7 @@ class GeminiService {
     }
   }
 
+  // Nova função para análise direta de texto sem imagem
   async analyzeTextOnly(prompt) {
     if (!this.isInitialized()) {
       await this.initialize();
@@ -117,15 +116,12 @@ class GeminiService {
     try {
       console.log('Analisando texto:', prompt);
       
-      // Simplificando o prompt para modo texto
-      const finalPrompt = `${this.prompts.text}\n\n${prompt}`;
-      
-      // Preparar payload para a API Gemini (apenas texto)
+      // Preparar payload para a API Gemini sem imagem
       const payload = {
         contents: [
           {
             parts: [
-              { text: finalPrompt }
+              { text: prompt }
             ]
           }
         ],
@@ -151,20 +147,13 @@ class GeminiService {
           response.data.candidates && 
           response.data.candidates[0] && 
           response.data.candidates[0].content &&
-          response.data.candidates[0].content.parts &&
-          response.data.candidates[0].content.parts[0]) {
+          response.data.candidates[0].content.parts) {
         return response.data.candidates[0].content.parts[0].text;
       }
       
       throw new Error('Formato de resposta inesperado da API Gemini');
     } catch (error) {
       console.error('Erro ao analisar texto com Gemini:', error);
-      
-      // Verificar se é erro 429 (Too Many Requests)
-      if (error.response && error.response.status === 429) {
-        return "**Erro 429: Muitas requisições**\n\nAguarde um momento antes de tentar novamente.";
-      }
-      
       throw error;
     }
   }
