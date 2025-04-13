@@ -11,7 +11,6 @@ const AnalysisPanel = ({ isConfigured, showNotification, setActiveTab }) => {
   const [analysis, setAnalysis] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [customPrompt, setCustomPrompt] = useState('');
-  const [promptOnly, setPromptOnly] = useState(false);
   const analysisRef = useRef(null);
   
   // Configura ouvintes de eventos
@@ -21,18 +20,15 @@ const AnalysisPanel = ({ isConfigured, showNotification, setActiveTab }) => {
     // Evento quando um screenshot é capturado
     window.electron.onScreenshotCaptured((path) => {
       setScreenshotPath(path);
-      setPromptOnly(false);
       showNotification('Screenshot capturado com sucesso!', 'success');
     });
     
     // Evento para analisar o screenshot (Alt+Enter)
     window.electron.onAnalyzeScreenshot(() => {
-      if (promptOnly) {
-        handleTextOnlyAnalysis();
-      } else if (screenshotPath) {
+      if (screenshotPath) {
         handleAnalyzeScreenshot();
       } else {
-        showNotification('Capture um screenshot (Alt+S) ou ative modo texto', 'warning');
+        showNotification('Capture um screenshot primeiro (Alt+S)', 'warning');
       }
     });
     
@@ -42,11 +38,10 @@ const AnalysisPanel = ({ isConfigured, showNotification, setActiveTab }) => {
       setScreenshotPath(null);
       setAnalysis('');
       setCustomPrompt('');
-      setPromptOnly(false);
       
       showNotification('Contexto reiniciado com sucesso! Pronto para novo problema.', 'success');
     });
-  }, [isConfigured, screenshotPath, promptOnly, customPrompt]);
+  }, [isConfigured, screenshotPath, customPrompt]);
 
   // Função para analisar o screenshot
   const handleAnalyzeScreenshot = async () => {
@@ -86,53 +81,6 @@ const AnalysisPanel = ({ isConfigured, showNotification, setActiveTab }) => {
       setIsLoading(false);
     }
   };
-
-  // Nova função para analisar apenas texto sem screenshot
-  const handleTextOnlyAnalysis = async () => {
-    if (!customPrompt || customPrompt.trim() === '') {
-      showNotification('Digite um prompt para análise', 'warning');
-      return;
-    }
-    
-    if (!isConfigured) {
-      showNotification('Configure as APIs primeiro', 'error');
-      setActiveTab('settings');
-      return;
-    }
-    
-    setIsLoading(true);
-    
-    try {
-      // Análise direta com Gemini usando apenas texto
-      const result = await geminiService.analyzeTextOnly(customPrompt);
-      
-      // Atualiza a UI
-      setAnalysis(result);
-      
-      // Scroll para o início da análise
-      if (analysisRef.current) {
-        analysisRef.current.scrollTop = 0;
-      }
-      
-      showNotification('Análise concluída!', 'success');
-    } catch (error) {
-      console.error('Erro ao processar prompt de texto:', error);
-      showNotification(`Erro: ${error.message}`, 'error');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // Alternar entre modo screenshot e modo texto
-  const togglePromptMode = () => {
-    setPromptOnly(!promptOnly);
-    if (!promptOnly) {
-      setScreenshotPath(null);
-      showNotification('Modo texto ativado! Use apenas prompts.', 'info');
-    } else {
-      showNotification('Modo screenshot ativado!', 'info');
-    }
-  };
   
   // Renderiza os atalhos de teclado
   const renderShortcuts = () => (
@@ -164,51 +112,30 @@ const AnalysisPanel = ({ isConfigured, showNotification, setActiveTab }) => {
         </div>
       ) : (
         <>
-          {/* Seletor de modo: Screenshot ou Texto */}
-          <div className="mode-selector">
-            <button 
-              className={`mode-button ${!promptOnly ? 'active' : ''}`}
-              onClick={() => promptOnly && togglePromptMode()}
-            >
-              Modo Screenshot
-            </button>
-            <button 
-              className={`mode-button ${promptOnly ? 'active' : ''}`}
-              onClick={() => !promptOnly && togglePromptMode()}
-            >
-              Modo Texto
-            </button>
+          {/* Status do screenshot */}
+          <div className="screenshot-status">
+            {screenshotPath ? (
+              <p className="success">Screenshot capturado e pronto para análise</p>
+            ) : (
+              <p className="title">Pressione Alt+S para capturar um screenshot</p>
+            )}
           </div>
-          
-          {/* Status do screenshot - mostrado apenas no modo screenshot */}
-          {!promptOnly && (
-            <div className="screenshot-status">
-              {screenshotPath ? (
-                <p className="success">Screenshot capturado e pronto para análise</p>
-              ) : (
-                <p className="title">Pressione Alt+S para capturar um screenshot</p>
-              )}
-            </div>
-          )}
           
           {/* Campo de prompt personalizado */}
           <div className="custom-prompt">
             <textarea 
-              placeholder={promptOnly 
-                ? "Digite seu problema ou questão aqui para análise direta"
-                : "Prompt personalizado para a IA (opcional)"
-              }
+              placeholder="Prompt personalizado para a IA (opcional)"
               value={customPrompt}
               onChange={(e) => setCustomPrompt(e.target.value)}
-              rows={promptOnly ? 5 : 3}
+              rows={3}
             />
           </div>
           
           {/* Botão de análise */}
           <div className="analyze-button">
             <button 
-              onClick={promptOnly ? handleTextOnlyAnalysis : handleAnalyzeScreenshot} 
-              disabled={isLoading || (!promptOnly && !screenshotPath) || (promptOnly && !customPrompt)}
+              onClick={handleAnalyzeScreenshot} 
+              disabled={isLoading || !screenshotPath}
             >
               {isLoading ? 'Analisando...' : 'Analisar'}
             </button>
@@ -232,10 +159,7 @@ const AnalysisPanel = ({ isConfigured, showNotification, setActiveTab }) => {
               </div>
             ) : (
               <div className="no-analysis">
-                {promptOnly 
-                  ? "Digite um prompt e clique em Analisar para ver os resultados"
-                  : "Capture um screenshot e clique em Analisar para ver os resultados"
-                }
+                Capture um screenshot e clique em Analisar para ver os resultados
               </div>
             )}
           </div>

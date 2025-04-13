@@ -48,9 +48,8 @@ class GeminiService {
       );
       
       // Construir prompt base
-      // const basePrompt = "Analise esta imagem de código. Forneça: 1) Problema identificado 2) Explicação rápida 3) Solução otimizada com código 4) Complexidade (tempo/espaço). Responda em português, objetivamente e com formatação markdown.";
-      // const basePrompt = "Extraia SOMENTE o código da solução desta imagem. 1) Problema identificado resposta curta. 2) Explicação rápida e curta. Retorne apenas o bloco de código que resolve o problema objetivamente e com formatação markdown.";
       const basePrompt = "Analise a imagem do problema e responda com: 1) Problema identificado (uma frase) 2) Explicação rápida (uma frases curta simples e que eu lendo uma pessoa não note que eu esteja lendo a frase) 3) Código comentado que resolve o problema. Use formatação markdown.";
+      
       // Combinar com prompt personalizado se existir
       const finalPrompt = customPrompt ? 
         `${basePrompt}\n\nInstruções adicionais: ${customPrompt}` : 
@@ -100,60 +99,6 @@ class GeminiService {
       throw new Error('Formato de resposta inesperado da API Gemini');
     } catch (error) {
       console.error('Erro ao analisar imagem com Gemini:', error);
-      throw error;
-    }
-  }
-
-  // Nova função para análise direta de texto sem imagem
-  async analyzeTextOnly(prompt) {
-    if (!this.isInitialized()) {
-      await this.initialize();
-      if (!this.isInitialized()) {
-        throw new Error('Gemini não inicializado');
-      }
-    }
-    
-    try {
-      console.log('Analisando texto:', prompt);
-      
-      // Preparar payload para a API Gemini sem imagem
-      const payload = {
-        contents: [
-          {
-            parts: [
-              { text: prompt }
-            ]
-          }
-        ],
-        generation_config: {
-          temperature: 0.2,
-          max_output_tokens: 2048,
-        }
-      };
-      
-      // Chamar API Gemini
-      const response = await axios.post(
-        `${this.baseUrl}?key=${this.apiKey}`,
-        payload,
-        {
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        }
-      );
-      
-      // Extrair e retornar o texto da resposta
-      if (response.data && 
-          response.data.candidates && 
-          response.data.candidates[0] && 
-          response.data.candidates[0].content &&
-          response.data.candidates[0].content.parts) {
-        return response.data.candidates[0].content.parts[0].text;
-      }
-      
-      throw new Error('Formato de resposta inesperado da API Gemini');
-    } catch (error) {
-      console.error('Erro ao analisar texto com Gemini:', error);
       throw error;
     }
   }
