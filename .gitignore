@@ -47,3 +47,6 @@ Thumbs.db
 
 # Dados do usuário
 userdata/
+
+# Zip
+*.zip
