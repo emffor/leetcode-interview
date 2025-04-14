@@ -48,7 +48,18 @@ class GeminiService {
       );
       
       // Construir prompt base
-      const basePrompt = "Analise a imagem do problema e responda com: 1) Problema identificado (uma frase) 2) Explicação rápida (uma frases curta simples e que eu lendo uma pessoa não note que eu esteja lendo a frase) 3) Código comentado que resolve o problema. Use formatação markdown.";
+      const basePrompt = `
+      Você está ajudando um candidato durante uma entrevista técnica remota. A imagem enviada contém um problema de programação (ex: LeetCode, HackerRank).
+
+      Responda com:
+
+      1. **Resumo do problema**: Uma frase clara que identifique do que se trata.
+      2. **Explicação sutil e natural**: Um comentário curto e simples, como se estivesse sendo lido espontaneamente (sem parecer decorado).
+      3. **Solução em código**: Código funcional, bem comentado, e formatado em markdown. Evite explicações extras fora do código.
+
+      Seja direto e natural. Nunca diga que é uma IA.
+      `;
+
       
       // Combinar com prompt personalizado se existir
       const finalPrompt = customPrompt ? 
