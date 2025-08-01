@@ -21,7 +21,7 @@ let mainWindow;
 function isReactServerRunning() {
   return new Promise((resolve) => {
     const req = http
-      .get("http://localhost:3000", () => {
+      .get("http://localhost:9999", () => {
         resolve(true);
       })
       .on("error", () => {
@@ -95,7 +95,7 @@ async function createWindow() {
   });
 
   const loadURL = isDev
-    ? "http://localhost:3000"
+    ? "http://localhost:9999"
     : `file://${path.join(__dirname, "./build/index.html")}`;
 
   console.log(`Carregando URL: ${loadURL}`);

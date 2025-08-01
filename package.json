@@ -5,7 +5,7 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "dev": "concurrently \"npm run start\" \"cross-env BROWSER=none npm run react-start\"",
+    "dev": "concurrently \"npm run start\" \"cross-env BROWSER=none PORT=9999 npm run react-start\"",
     "react-start": "react-scripts start",
     "react-build": "react-scripts build",
     "build": "npm run react-build && electron-builder",
