@@ -5,7 +5,7 @@ class GeminiService {
     this.apiKey = null;
     this.initialized = false;
     this.baseUrl =
-      "https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash-lite:generateContent";
+      "https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent";
     this.responseCache = new Map();
     this.maxRetries = 2;
     this.retryDelay = 1000;

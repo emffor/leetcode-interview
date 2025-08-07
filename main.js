@@ -158,7 +158,7 @@ function registerShortcuts() {
     }
   });
 
-  globalShortcut.register("Alt+B", () => {
+  globalShortcut.register("Alt+Q", () => {
     if (!mainWindow) return;
     isVisible = !isVisible;
 
