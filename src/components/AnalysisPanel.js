@@ -25,6 +25,9 @@ const AnalysisPanel = ({ isConfigured, showNotification, setActiveTab }) => {
   const [analysisHistory, setAnalysisHistory] = useState([]);
   const [showHistory, setShowHistory] = useState(false);
 
+  // Estado para controlar exibição dos atalhos
+  const [showShortcuts, setShowShortcuts] = useState(false);
+
   // Refs
   const analysisRef = useRef(null);
   const promptRef = useRef(null);
@@ -377,7 +380,7 @@ const AnalysisPanel = ({ isConfigured, showNotification, setActiveTab }) => {
           <span className="key">Alt+Enter</span> - Analisar
         </li>
         <li className="text">
-          <span className="key">Alt+Espaço</span> - Ocultar/Exibir
+          <span className="key">Alt+Q</span> - Ocultar/Exibir
         </li>
         <li className="text">
           <span className="key">Alt+G</span> - Reiniciar
@@ -458,6 +461,15 @@ const AnalysisPanel = ({ isConfigured, showNotification, setActiveTab }) => {
                   Copiar
                 </button>
               )}
+
+              <button
+                className="history-button"
+                onClick={() => setShowShortcuts(!showShortcuts)}
+                disabled={loadingState !== "idle"}
+                title={showShortcuts ? "Ocultar atalhos" : "Mostrar atalhos"}
+              >
+                {showShortcuts ? "Ocultar" : "Atalhos"}
+              </button>
             </div>
           </div>
 
@@ -505,8 +517,8 @@ const AnalysisPanel = ({ isConfigured, showNotification, setActiveTab }) => {
             )}
           </div>
 
-          {/* Atalhos de teclado */}
-          {renderShortcuts()}
+          {/* Atalhos de teclado - Agora condicionais */}
+          {showShortcuts && renderShortcuts()}
 
           {/* Overlay de histórico */}
           {renderHistory()}

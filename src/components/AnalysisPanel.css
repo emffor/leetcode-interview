@@ -162,7 +162,8 @@
   gap: 8px;
 }
 
-.history-button, .copy-button {
+.history-button,
+.copy-button {
   padding: 8px 12px;
   font-size: 13px;
   background-color: rgba(60, 60, 60, 0.8);
@@ -173,13 +174,13 @@
   transition: all 0.2s;
 }
 
-.history-button:hover:not(:disabled), 
+.history-button:hover:not(:disabled),
 .copy-button:hover:not(:disabled) {
   background-color: rgba(70, 70, 70, 0.9);
   color: white;
 }
 
-.history-button:disabled, 
+.history-button:disabled,
 .copy-button:disabled {
   opacity: 0.6;
   cursor: not-allowed;
@@ -221,7 +222,9 @@
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .loading-text {
@@ -406,7 +409,7 @@
 }
 
 .markdown-content code {
-  font-family: 'Consolas', 'Monaco', monospace;
+  font-family: "Consolas", "Monaco", monospace;
   font-size: 13px;
   padding: 2px 4px;
   border-radius: 3px;
@@ -434,7 +437,8 @@
   color: #f3f4f6;
 }
 
-.markdown-content h3, .markdown-content h4 {
+.markdown-content h3,
+.markdown-content h4 {
   font-size: 16px;
   margin-top: 20px;
   margin-bottom: 10px;
@@ -445,7 +449,8 @@
   margin: 10px 0;
 }
 
-.markdown-content ul, .markdown-content ol {
+.markdown-content ul,
+.markdown-content ol {
   padding-left: 24px;
   margin: 10px 0;
 }
@@ -460,7 +465,8 @@
   margin: 16px 0;
 }
 
-.markdown-content th, .markdown-content td {
+.markdown-content th,
+.markdown-content td {
   border: 1px solid rgba(100, 100, 100, 0.3);
   padding: 8px 12px;
   text-align: left;
@@ -497,6 +503,27 @@
   border-radius: 6px;
   padding: 12px 16px;
   font-size: 14px;
+  margin-top: 16px;
+  animation: slideDown 0.3s ease-out;
+  overflow: hidden;
+}
+
+/* Animação para mostrar os atalhos */
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+    max-height: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    max-height: 200px;
+    padding-top: 12px;
+    padding-bottom: 16px;
+  }
 }
 
 .shortcuts p {
@@ -550,5 +577,21 @@
   .shortcuts ul {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Melhorias de acessibilidade para animações */
+@media (prefers-reduced-motion: reduce) {
+  .shortcuts {
+    animation: none;
+  }
+
+  @keyframes slideDown {
+    from,
+    to {
+      opacity: 1;
+      transform: translateY(0);
+      max-height: none;
+    }
   }
 }
